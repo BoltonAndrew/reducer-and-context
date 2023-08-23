@@ -1,54 +1,61 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import styles from "./Product.module.css";
 import Card from "./Card.jsx";
 import ViewList from "./ViewList.jsx";
+import { defaultProduct, productReducer } from "../reducers/ProductReducers.js";
+import ProductContext from "../context/ProductContext.jsx";
 
 function Product() {
-  const [count, setCount] = useState(1);
-  const [discount, setDiscount] = useState(0);
-  const [name, setName] = useState("Banana");
-  const [price, setPrice] = useState(2.99);
+  // const [count, setCount] = useState(1);
+  // const [discount, setDiscount] = useState(0);
+  // const [name, setName] = useState("Banana");
+  // const [price, setPrice] = useState(2.99);
 
+  // const [state, dispatch] = useReducer(productReducer, defaultProduct);
+
+  const ctx = useContext(ProductContext);
   const [list, setList] = useState([]);
   const [sumTotal, setSumTotal] = useState(0);
 
-  const handlerPlus = () => {
-    setCount((prevCount) => {
-      let count = prevCount + 1;
-      if (count >= 5) {
-        setDiscount(20);
-      }
-      return count;
-    });
-  };
-  const handlerMinus = () => {
-    setCount((prevCount) => {
-      let count = prevCount - 1;
-      if (count < 5) {
-        setDiscount(0);
-      }
-      if (count < 0) return 0;
-      return count;
-    });
-  };
+  // const handlerPlus = () => {
+  //   dispatch({ type: "PLUS_COUNT" });
+  //   // setCount((prevCount) => {
+  //   //   let count = prevCount + 1;
+  //   //   if (count >= 5) {
+  //   //     setDiscount(20);
+  //   //   }
+  //   //   return count;
+  //   // });
+  // };
+  // const handlerMinus = () => {
+  //   dispatch({ type: "MINUS_COUNT" });
+  //   // setCount((prevCount) => {
+  //   //   let count = prevCount - 1;
+  //   //   if (count < 5) {
+  //   //     setDiscount(0);
+  //   //   }
+  //   //   if (count < 0) return 0;
+  //   //   return count;
+  //   // });
+  // };
 
-  const handlerChangeName = (value) => {
-    setName(value);
-  };
-  const handlerChangePrice = (value) => {
-    setPrice(value);
-  };
+  // const handlerChangeName = (value) => {
+  //   dispatch({ type: "CHANGE_NAME", value });
+  // };
+  // const handlerChangePrice = (value) => {
+  //   dispatch({ type: "CHANGE_PRICE", value });
+  // };
   const handlerAddProduct = () => {
     console.log("handlerAddProduct: name, price: ", name, price);
 
     // Create new list item
     const newItem = {
-      name: name,
-      quantity: count,
-      price: price,
-      discount: discount,
-      total: (count * price * (100 - discount)) / 100,
+      name: ctx.name,
+      quantity: ctx.count,
+      price: ctx.price,
+      discount: ctx.discount,
+      total: (ctx.count * ctx.price * (100 - ctx.discount)) / 100,
     };
 
     // Copy previous list and append new item to its end
@@ -64,17 +71,7 @@ function Product() {
 
   return (
     <div className={styles.container}>
-      <Card
-        name={name}
-        count={count}
-        price={price}
-        discount={discount}
-        handlerMinus={handlerMinus}
-        handlerPlus={handlerPlus}
-        handlerChangeName={handlerChangeName}
-        handlerChangePrice={handlerChangePrice}
-        handlerAddProduct={handlerAddProduct}
-      />
+      <Card handlerAddProduct={handlerAddProduct} />
       <ViewList list={list} sum={sumTotal} />
     </div>
   );
